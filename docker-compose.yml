@@ -1,0 +1,12 @@
+version: '2.1'
+
+services:
+
+  es-ifttt:
+    build: .
+    image: local/es-ifttt
+    container_name: es-ifttt
+    hostname: es-ifttt
+#    ports:
+#      - 3000:3000
+
