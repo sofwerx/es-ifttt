@@ -42,8 +42,8 @@ app.post('/', jsonParser, (request, response) => {
   var yyyymmdd = now.toISOString().substring(0, 10);
 
   es.index({
-    index: `domoticz-${yyyymmdd}`,
-    type: 'notification',
+    index: `ifttt-${yyyymmdd}`,
+    type: 'webhook',
     id: `${now}`,
     body: request.body
   }, function (err, resp) {
