@@ -37,19 +37,30 @@ app.get('/', (request, response) => {
 app.post('/', jsonParser, (request, response) => {
   console.log('POST /')
   console.log(request.body)
-  response.status(200).json({ success: true })
+
   var now = new Date()
   var yyyymmdd = now.toISOString().substring(0, 10);
 
-  es.index({
+  var payload = request.body;
+  if(payload && ! payload.timestamp) {
+    payload.timestamp = now;
+  }
+
+  var data = {
     index: `ifttt-${yyyymmdd}`,
     type: 'webhook',
     id: `${now}`,
     body: request.body
-  }, function (err, resp) {
+  };
+
+  es.index(data, function (err, resp) {
     if(err) {
       var pretty = JSON.stringify(resp, null, 4)
-      console.log(`ElasticSearch create error: ${err}: ${pretty}`)
+      console.log(`ElasticSearch create error: ${err}: ${pretty}: ${data}`)
+      response.status(500).json({ success: false })
+    } else {
+      console.log(`ElasticSearch created: ${data}`)
+      response.status(200).json({ success: true })
     }
   });
 
